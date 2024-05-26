@@ -5,6 +5,7 @@ import "./interfaces/ICaller.sol";
 
 contract Oracle{
     mapping(address => bool) public whitelist;
+    mapping(uint256 => bool) public requestIds;
 
 
     event DataRequested(uint256 indexed requestId, bytes32 inputData, string url);
@@ -34,6 +35,8 @@ contract Oracle{
     }
     
     function sendResult(uint256 requestId, uint8 result) external returns (uint8) {
+        require(!requestIds[requestId], "Result already sent");
+        requestIds[requestId] = true;
         ICaller(msg.sender).processResult(requestId, result);
         emit ResultProcessed(requestId, result);
     }
