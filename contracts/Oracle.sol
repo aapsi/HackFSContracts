@@ -7,7 +7,7 @@ contract Oracle{
     mapping(address => bool) public whitelist;
 
 
-    event DataRequested(uint256 indexed requestId, string inputData);
+    event DataRequested(uint256 indexed requestId, bytes32 inputData, string url);
     event ResultProcessed(uint256 indexed requestId, uint8 result);
     
     constructor(address[] memory allowedAddresses) {
@@ -29,12 +29,15 @@ contract Oracle{
         whitelist[_address] = false;
     }
     
-    function requestResult(uint256 requestId, string memory inputData) external onlyWhitelisted {
-        emit DataRequested(requestId, inputData);
+    function requestResult(uint256 requestId, bytes32 inputData, string memory url) external onlyWhitelisted {
+        emit DataRequested(requestId, inputData, url);
     }
     
     function sendResult(uint256 requestId, uint8 result) external returns (uint8) {
         ICaller(msg.sender).processResult(requestId, result);
         emit ResultProcessed(requestId, result);
     }
+
+    // DataRequested event -> tx -> logs -> input prepare -> result -> 
+    // add url
 }

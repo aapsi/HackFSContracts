@@ -7,6 +7,7 @@ contract Caller {
 
     uint256 public requestID;
     IOracle oracle;
+    string public url = "";
 
     mapping(uint256 => uint8) public results;
 
@@ -20,11 +21,13 @@ contract Caller {
 
     function requestResult(bytes32 transactionData) public returns (uint256) {
         requestID += 1;
-        oracle.requestResult(requestID, transactionData);
+        oracle.requestResult(requestID, transactionData, url);
     }
 
     function processResult(uint256 _requestID, uint8 result) public returns (uint8) {
         results[_requestID] = result;
         emit ResultProcessed(_requestID, result);
     }
+
+    // tx -> logs -> 
 }
